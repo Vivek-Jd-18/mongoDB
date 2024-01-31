@@ -3,6 +3,7 @@ import mongoose, { ConnectOptions } from "mongoose";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import playerRoutes from "./Routes/playerRoutes";
+import authRoutes from "./Routes/authRoutes";
 
 mongoose.connect("mongodb://localhost:27017", {
   useNewUrlParser: true,
@@ -16,15 +17,19 @@ db.once("open", function () {
 });
 
 const app = express();
+
 app.use(morgan("dev"));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const PORT: string = process.env.PORT || "3000";
+
+app.use("/auth", authRoutes);
 app.use("/player", playerRoutes);
-app.use('/uploads', express.static('uploads'));
+// app.use("/uploads", express.static("uploads"));
+
+
+const PORT: string = process.env.PORT || "3000";
 
 app.listen(3000, () => {
   console.log(`Server listening on port ${PORT}...`);
 });
-
