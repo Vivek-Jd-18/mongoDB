@@ -63,14 +63,14 @@ const loginUser = async (req: any, res: any) => {
         { user_id: user._id },
         process.env.JWT_SECRET as string,
         {
-          expiresIn: "30s",
+          expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME as string,
         },
       );
       let refreshToken = await jwt.sign(
         { user_id: user._id },
         process.env.REFRESH_TOKEN_SECRET as string,
         {
-          expiresIn: "24h",
+          expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME as string,
         },
       );
       res.status(200).json({

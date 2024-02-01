@@ -1,17 +1,25 @@
 import Player from "../Models/Players";
 
 // get all players
-export const getPlayers = async (req: any, res: any) => {
+const getPlayers = async (req: any, res: any) => {
   try {
-    const players = await Player.find();
-    res.status(200).json(players);
+    if (req.query.page && req.query.limit) {
+      const players = await Player.paginate(
+        {},
+        { page: req.query.page, limit: req.query.limit },
+      );
+      res.status(200).json(players);
+    } else {
+      const players = await Player.find();
+      res.status(200).json(players);
+    }
   } catch (error: any) {
     res.status(404).json({ message: error.message });
   }
 };
 
 // get a single player
-export const getPlayer = async (req: any, res: any) => {
+const getPlayer = async (req: any, res: any) => {
   const { id } = req.params;
   try {
     const player = await Player.findById(id);
@@ -22,7 +30,7 @@ export const getPlayer = async (req: any, res: any) => {
 };
 
 // create a player
-export const createPlayer = async (req: any, res: any) => {
+const createPlayer = async (req: any, res: any) => {
   let _player = new Player({
     name: req.body.name,
     primaryPosition: req.body.primaryPosition,
@@ -54,7 +62,7 @@ export const createPlayer = async (req: any, res: any) => {
 };
 
 // update a player
-export const updatePlayer = async (req: any, res: any) => {
+const updatePlayer = async (req: any, res: any) => {
   const { id } = req.params;
   console.log(id, "id");
   let _player = {
@@ -89,7 +97,7 @@ export const updatePlayer = async (req: any, res: any) => {
 };
 
 // delete a player
-export const deletePlayer = async (req: any, res: any) => {
+const deletePlayer = async (req: any, res: any) => {
   const { id } = req.params;
   try {
     await Player.findByIdAndDelete(id);
@@ -99,7 +107,7 @@ export const deletePlayer = async (req: any, res: any) => {
   }
 };
 
-export const multiUpload = async (req: any, res: any) => {
+const multiUpload = async (req: any, res: any) => {
   if (req.files) {
     console.log(req.files);
   }
@@ -133,7 +141,7 @@ export const multiUpload = async (req: any, res: any) => {
   }
 };
 
-module.exports = {
+export {
   getPlayers,
   getPlayer,
   createPlayer,

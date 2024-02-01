@@ -36,7 +36,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });
 
-app.use(upload.array());
+// app.use(upload.array());
 
 app.use("/uploads", express.static("uploads"));
 app.use("/player", playerRoutes);

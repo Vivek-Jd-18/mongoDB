@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const Schema: any = mongoose.Schema;
 
@@ -81,5 +82,7 @@ const playerSchema = new Schema(
   },
 );
 
-const Player = mongoose.model("Player", playerSchema);
+playerSchema.plugin(mongoosePaginate);
+
+const Player: any = mongoose.model("Player", playerSchema);
 export default Player;
