@@ -9,14 +9,16 @@ const playerSchema = new Schema(
       type: String,
       required: true,
     },
-    primaryPosition:{
+    primaryPosition: {
       type: String,
       required: true,
     },
-    positions: [{
-      type: String,
-      required: true,
-    }],
+    positions: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     club: {
       type: String,
       required: true,
@@ -76,7 +78,7 @@ const playerSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Player = mongoose.model("Player", playerSchema);

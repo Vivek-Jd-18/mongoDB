@@ -3,61 +3,96 @@ import jwt from "jsonwebtoken";
 import User from "../../Models/User";
 
 // register handler
-const register = async (req: any, res: any) => {
+const registerUser = async (req: any, res: any) => {
   try {
-    const { username, email, password } = req.body;
-    console.log(username, email, password,"Details",req.body);
-    
-    // bcrypt.hash(password, 10, async function (err: any, hashedPwd:any) {
-    //   if (err) {
-    //     console.log(err);
-    //   }
-    //   const user = new User({
-    //     username,
-    //     email,
-    //     password: hashedPwd,
-    //   });
-    //   await user.save();
-      res
-        .status(201)
-        .json({ message: "User created successfully", data: "user" });
-    // });
-  } catch (error) {
-    res.status(500).json({ message: error });
+    const existingUser = await User.findOne({
+      $or: [
+        { email: req.body.email },
+        { phoneNumber: req.body.phoneNumber },
+        { username: req.body.username },
+      ],
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message:
+          existingUser.email === req.body.email
+            ? "User already exists"
+            : existingUser.phoneNumber === req.body.phoneNumber
+              ? "Phone number already used"
+              : "Username already taken",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = new User({
+      username: req.body.username,
+      email: req.body.email,
+      password: hashedPassword,
+      phoneNumber: req.body.phoneNumber,
+    });
+
+    await user.save();
+
+    res.status(201).json({
+      success: true,
+      message: "user added successfully",
+      data: user,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "user not added",
+      error: error.message, // Expose only the error message for security
+    });
   }
 };
 
-// login handler
-// const login = async (req: any, res: any) => {
-//   const { email, password } = req.body;
-//   try {
-//     // Find the user by email
-//     const user = await User.findOne({ email });
-
-//     // Check if user exists
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     // Compare passwords
-//     const isMatch = await bcrypt.compare(password, user.password);
-
-//     // Check if passwords match
-//     if (!isMatch) {
-//       return res.status(401).json({ message: "Invalid credentials" });
-//     }
-
-//     // Generate JWT token
-//     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-
-//     // Send token in response
-//     res.status(200).json({ message: "Login successful", token });
-//   } catch (error: any) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-export {
-  register,
-  // login
+const loginUser = async (req: any, res: any) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    if (user && (await bcrypt.compare(password, user.password))) {
+      let token = await jwt.sign(
+        { user_id: user._id },
+        process.env.JWT_SECRET as string,
+        {
+          expiresIn: "30s",
+        },
+      );
+      let refreshToken = await jwt.sign(
+        { user_id: user._id },
+        process.env.REFRESH_TOKEN_SECRET as string,
+        {
+          expiresIn: "24h",
+        },
+      );
+      res.status(200).json({
+        success: true,
+        message: "Login successful",
+        data: {
+          token,
+          refreshToken,
+        },
+      });
+    } else {
+      res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 };
+
+export { registerUser, loginUser };

@@ -99,47 +99,39 @@ export const deletePlayer = async (req: any, res: any) => {
   }
 };
 
-
-
-
-
-
 export const multiUpload = async (req: any, res: any) => {
-    if(req.files){
-        console.log(req.files)
-    }
-    // let _player = new Player({
-    //   name: req.body.name,
-    //   primaryPosition: req.body.primaryPosition,
-    //   positions: req.body.positions,
-    //   club: req.body.club,
-    //   jerseyNumber: req.body.jerseyNumber,
-    //   nationality: req.body.nationality,
-    //   age: req.body.age,
-    //   height: req.body.height,
-    //   weight: req.body.weight,
-    //   matchesPlayed: req.body.matchesPlayed,
-    //   goalsScored: req.body.goalsScored,
-    //   assists: req.body.assists,
-    //   yellowCards: req.body.yellowCards,
-    //   redCards: req.body.redCards,
-    //   rating: req.body.rating,
-    //   description: req.body.description,
-    // });
-    // if (req.file) {
-    //   _player.image = req.file.path;
-    // }
-    // const playerData = await _player.save();
-    try {
+  if (req.files) {
+    console.log(req.files);
+  }
+  // let _player = new Player({
+  //   name: req.body.name,
+  //   primaryPosition: req.body.primaryPosition,
+  //   positions: req.body.positions,
+  //   club: req.body.club,
+  //   jerseyNumber: req.body.jerseyNumber,
+  //   nationality: req.body.nationality,
+  //   age: req.body.age,
+  //   height: req.body.height,
+  //   weight: req.body.weight,
+  //   matchesPlayed: req.body.matchesPlayed,
+  //   goalsScored: req.body.goalsScored,
+  //   assists: req.body.assists,
+  //   yellowCards: req.body.yellowCards,
+  //   redCards: req.body.redCards,
+  //   rating: req.body.rating,
+  //   description: req.body.description,
+  // });
+  // if (req.file) {
+  //   _player.image = req.file.path;
+  // }
+  // const playerData = await _player.save();
+  try {
     //   const newPlayer = await Player.create(playerData);
-      res.status(201).json({ message: "Player created!", data: "newPlayer" });
-    } catch (error: any) {
-      res.status(400).json({ message: error.message });
-    }
-  };
-
-
-
+    res.status(201).json({ message: "Player created!", data: "newPlayer" });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 module.exports = {
   getPlayers,
