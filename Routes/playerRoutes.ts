@@ -15,7 +15,7 @@ const router = Router();
 
 router.get("/get-players", authGuard, getPlayers);
 router.get("/get-single-player/:id", getPlayer);
-router.post("/create-player", upload.single("image"), createPlayer);
+router.post("/create-player", upload.single("image"),authGuard, createPlayer);
 router.post("/multi-upload", upload.array("images[]"), multiUpload);
 router.put("/update-player/:id", updatePlayer);
 router.delete("/delete-player/:id", deletePlayer);
